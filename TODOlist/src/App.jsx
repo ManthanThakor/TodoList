@@ -1,29 +1,69 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import Navbar from "./components/navbar";
+import { v4 as uuidv4 } from 'uuid';
 
 function App() {
   const [todo, settodo] = useState("");
   const [todos, settodos] = useState([]);
 
-  const handleEdit = () => {
-    // Add edit logic here
+
+
+  useEffect(() => {
+    let todostring = localStorage.getItem("todos");
+    if (todostring) {
+      let todos =JSON.parse(localStorage.getItem("todos"));
+      settodos(todos);
+
+    }
+  }, [])
+  
+const  savetols = (params) => {
+  localStorage.setItem("todos", JSON.stringify())
+}
+
+
+  const handleEdit = (e, id) => {
+let t = todos.filter(i=>i.id === id)
+settodo(t[0].todo);
+let newTodos = todos.filter(item =>{
+  return item.id !== id;
+});
+settodos(newTodos);
+savetols()
   };
 
   const handleAdd = () => {
-    settodos([...todos, { todo, isComplete: false }]);
+    settodos([...todos, { id: uuidv4(), todo, isComplete: false }]);
     settodo("");
     console.log(todos);
+
+    savetols()
   };
 
-  const handledelete = () => {
-    // Add delete logic here
+  const handleDelete = (id) => {
+let newTodos = todos.filter(item => item.id !== id);
+    settodos(newTodos);
+    savetols()
   };
 
   const handleChange = (e) => {
     settodo(e.target.value);
+  };
+
+  const handleCheckbox = (e) => {
+    let id = e.target.name;
+    console.log(id);
+    let index = todos.findIndex(item => {
+      return item.id === id;
+    });
+    console.log(index);
+    let newtodos = [...todos];
+    newtodos[index].isComplete = !newtodos[index].isComplete;
+    settodos(newtodos);
+    savetols()
   };
 
   return (
@@ -38,32 +78,40 @@ function App() {
               onClick={handleAdd}
               className="bg-violet-800 hover:bg-violet-950 p-2 py-1 text-sm font-bold text-white rounded-md mx-6"
             >
-              Add
+              Save
+
             </button>
           </div>
           <h2 className="text-lg font-bold">Your Todos</h2>
           <div className="todos">
-            {todos.map(item =>{
+            {todos.length == 0 && <div className="m-5">No Todo display</div>}
+            {todos.map(item => {
+              return (
+                <div key={item.id} className="todo flex w-1/4 my-3 justify-between">
+                  <div className="flex gap-5">
+                  <input
+                    onChange={handleCheckbox}
+                    type="checkbox"
+                    checked={item.isComplete}
+                    name={item.id}
+                    id={item.id}
+                  />
+                  <div className={item.isComplete ? "line-through" : ""}>{item.todo}</div>
 
-          return(  <div className="todo flex w-1/4 my-3 justify-between">
-            <input type="checkbox" value={todo.isComplete} name="" id="" />
-              <div className={item.isComplete ? "":"line-through"}>{item.todo}</div>
-              <div className="buttons">
-                <button
-                  onClick={handleEdit}
-                  className="bg-violet-800 hover:bg-violet-950 p-2 py-1 text-sm font-bold text-white rounded-md mx-1"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={handledelete}
-                  className="bg-violet-800 hover:bg-violet-950 p-2 py-1 text-sm font-bold text-white rounded-md mx-1"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-             ) })}
+                  </div>
+                  <div className="buttons">
+                    <button onClick={(e) =>handleEdit(e, item.id)} className="bg-violet-800 hover:bg-violet-950 p-2 py-1 text-sm font-bold text-white rounded-md mx-1" >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="bg-violet-800 hover:bg-violet-950 p-2 py-1 text-sm font-bold text-white rounded-md mx-1">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
