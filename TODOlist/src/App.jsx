@@ -6,64 +6,53 @@ import Navbar from "./components/navbar";
 import { v4 as uuidv4 } from 'uuid';
 
 function App() {
-  const [todo, settodo] = useState("");
-  const [todos, settodos] = useState([]);
-
-
+  const [todo, setTodo] = useState("");
+  const [todos, setTodos] = useState([]);
 
   useEffect(() => {
-    let todostring = localStorage.getItem("todos");
-    if (todostring) {
-      let todos =JSON.parse(localStorage.getItem("todos"));
-      settodos(todos);
-
+    const todoString = localStorage.getItem("todos");
+    if (todoString) {
+      const todos = JSON.parse(todoString);
+      setTodos(todos);
     }
-  }, [])
+  }, []);
   
-const  savetols = (params) => {
-  localStorage.setItem("todos", JSON.stringify())
-}
-
+  const saveToLocalStorage = (todos) => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  };
 
   const handleEdit = (e, id) => {
-let t = todos.filter(i=>i.id === id)
-settodo(t[0].todo);
-let newTodos = todos.filter(item =>{
-  return item.id !== id;
-});
-settodos(newTodos);
-savetols()
+    const t = todos.find(i => i.id === id);
+    setTodo(t.todo);
+    const newTodos = todos.filter(item => item.id !== id);
+    setTodos(newTodos);
+    saveToLocalStorage(newTodos);
   };
 
   const handleAdd = () => {
-    settodos([...todos, { id: uuidv4(), todo, isComplete: false }]);
-    settodo("");
-    console.log(todos);
-
-    savetols()
+    const newTodos = [...todos, { id: uuidv4(), todo, isComplete: false }];
+    setTodos(newTodos);
+    setTodo("");
+    saveToLocalStorage(newTodos);
   };
 
   const handleDelete = (id) => {
-let newTodos = todos.filter(item => item.id !== id);
-    settodos(newTodos);
-    savetols()
+    const newTodos = todos.filter(item => item.id !== id);
+    setTodos(newTodos);
+    saveToLocalStorage(newTodos);
   };
 
   const handleChange = (e) => {
-    settodo(e.target.value);
+    setTodo(e.target.value);
   };
 
   const handleCheckbox = (e) => {
-    let id = e.target.name;
-    console.log(id);
-    let index = todos.findIndex(item => {
-      return item.id === id;
-    });
-    console.log(index);
-    let newtodos = [...todos];
-    newtodos[index].isComplete = !newtodos[index].isComplete;
-    settodos(newtodos);
-    savetols()
+    const id = e.target.name;
+    const index = todos.findIndex(item => item.id === id);
+    const newTodos = [...todos];
+    newTodos[index].isComplete = !newTodos[index].isComplete;
+    setTodos(newTodos);
+    saveToLocalStorage(newTodos);
   };
 
   return (
@@ -74,33 +63,30 @@ let newTodos = todos.filter(item => item.id !== id);
           <div className="addTodo my-5">
             <h2 className="text-lg font-bold">Add a Todo</h2>
             <input onChange={handleChange} value={todo} type="text" className="w-1/2" />
-            <button
-              onClick={handleAdd}
+            <button onClick={handleAdd}
               className="bg-violet-800 hover:bg-violet-950 p-2 py-1 text-sm font-bold text-white rounded-md mx-6"
             >
               Save
-
             </button>
           </div>
           <h2 className="text-lg font-bold">Your Todos</h2>
           <div className="todos">
-            {todos.length == 0 && <div className="m-5">No Todo display</div>}
+            {todos.length === 0 && <div className="m-5">No Todo display</div>}
             {todos.map(item => {
               return (
                 <div key={item.id} className="todo flex w-1/4 my-3 justify-between">
                   <div className="flex gap-5">
-                  <input
-                    onChange={handleCheckbox}
-                    type="checkbox"
-                    checked={item.isComplete}
-                    name={item.id}
-                    id={item.id}
-                  />
-                  <div className={item.isComplete ? "line-through" : ""}>{item.todo}</div>
-
+                    <input
+                      onChange={handleCheckbox}
+                      type="checkbox"
+                      checked={item.isComplete}
+                      name={item.id}
+                      id={item.id}
+                    />
+                    <div className={item.isComplete ? "line-through break-words w-80" : " break-words w-80"}>{item.todo}</div>
                   </div>
-                  <div className="buttons">
-                    <button onClick={(e) =>handleEdit(e, item.id)} className="bg-violet-800 hover:bg-violet-950 p-2 py-1 text-sm font-bold text-white rounded-md mx-1" >
+                  <div className="buttons flex h-full">
+                    <button onClick={(e) => handleEdit(e, item.id)} className="bg-violet-800 hover:bg-violet-950 p-2 py-1 text-sm font-bold text-white rounded-md mx-1" >
                       Edit
                     </button>
                     <button
