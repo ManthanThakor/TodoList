@@ -1,23 +1,24 @@
-import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import React, { useEffect, useState } from 'react';
+import reactLogo from './assets/react.svg';
+import viteLogo from '/vite.svg';
+import './App.css';
 // import "./Appdark.css";
 
-import Navbar from "./components/navbar";
-import { v4 as uuidv4 } from "uuid";
-import { FaEdit } from "react-icons/fa";
-import { RiDeleteBin2Fill } from "react-icons/ri";
-import { IoIosSave } from "react-icons/io";
+import Navbar from './components/navbar';
+import DarkMode from './components/darkmode'; // Import DarkMode component
+import { v4 as uuidv4 } from 'uuid';
+import { FaEdit } from 'react-icons/fa';
+import { RiDeleteBin2Fill } from 'react-icons/ri';
+import { IoIosSave } from 'react-icons/io';
 
 function App() {
-  const [todo, setTodo] = useState("");
+  const [todo, setTodo] = useState('');
   const [todos, setTodos] = useState([]);
   const [showFinished, setShowFinished] = useState(true);
-  const [theme, setTheme] = useState("light"); // State for theme mode
+  const [theme, setTheme] = useState('light'); // State for theme mode
 
   useEffect(() => {
-    const todoString = localStorage.getItem("todos");
+    const todoString = localStorage.getItem('todos');
     if (todoString) {
       const todos = JSON.parse(todoString);
       setTodos(todos);
@@ -29,8 +30,13 @@ function App() {
     saveToLocalStorage(todos);
   }, [todos]);
 
+  useEffect(() => {
+    // Set theme class to body based on the current theme
+    document.body.className = theme === 'dark' ? 'dark' : '';
+  }, [theme]);
+
   const saveToLocalStorage = (todos) => {
-    localStorage.setItem("todos", JSON.stringify(todos));
+    localStorage.setItem('todos', JSON.stringify(todos));
   };
 
   const toggleFinished = () => {
@@ -47,7 +53,7 @@ function App() {
   const handleAdd = () => {
     const newTodos = [...todos, { id: uuidv4(), todo, isComplete: false }];
     setTodos(newTodos);
-    setTodo("");
+    setTodo('');
   };
 
   const handleDelete = (id) => {
@@ -67,11 +73,9 @@ function App() {
     setTodos(newTodos);
   };
 
-
-
   return (
-  <>
-      <Navbar />
+    <>
+      <Navbar theme={theme} setTheme={setTheme} /> {/* Pass theme and setTheme as props */}
       <div className="container mx-auto p-6">
         <div className="bg-violet-100 rounded-xl min-h-[80vh] p-8 shadow-lg">
           <h1 className="font-bold text-center text-3xl mb-6">
@@ -128,7 +132,7 @@ function App() {
                       />
                       <div
                         className={`${
-                          item.isComplete ? "line-through text-gray-400" : ""
+                          item.isComplete ? 'line-through text-gray-400' : ''
                         } break-words w-80`}
                       >
                         {item.todo}
@@ -155,7 +159,7 @@ function App() {
           </div>
         </div>
       </div>
-   </>
+    </>
   );
 }
 

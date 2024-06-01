@@ -11,7 +11,16 @@
   animation: fadeIn 0.5s ease-in-out;
 }
 
+/* App.css */
+
+/* Default light mode styles */
 body {
-  background-color: #ffffff;
-  color: #333333;
+  background-color: #ffffff; /* Light mode background color */
+  color: #000000; /* Light mode text color */
+}
+
+/* Dark mode styles */
+body.dark {
+  background-color: #000000; /* Dark mode background color */
+  color: #ffffff; /* Dark mode text color */
 }
