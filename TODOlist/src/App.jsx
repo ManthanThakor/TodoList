@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
-// import "./Appdark.css";
 
 import Navbar from './components/navbar';
-import DarkMode from './components/darkmode'; // Import DarkMode component
+import DarkMode from './components/darkmode';
 import { v4 as uuidv4 } from 'uuid';
 import { FaEdit } from 'react-icons/fa';
 import { RiDeleteBin2Fill } from 'react-icons/ri';
@@ -15,7 +14,7 @@ function App() {
   const [todo, setTodo] = useState('');
   const [todos, setTodos] = useState([]);
   const [showFinished, setShowFinished] = useState(true);
-  const [theme, setTheme] = useState('light'); // State for theme mode
+  const [theme, setTheme] = useState('light');
 
   useEffect(() => {
     const todoString = localStorage.getItem('todos');
@@ -26,12 +25,10 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // Update local storage whenever todos change
     saveToLocalStorage(todos);
   }, [todos]);
 
   useEffect(() => {
-    // Set theme class to body based on the current theme
     document.body.className = theme === 'dark' ? 'dark' : '';
   }, [theme]);
 
@@ -73,11 +70,20 @@ function App() {
     setTodos(newTodos);
   };
 
+  const mainPartStyle = {
+    backgroundColor: theme === 'dark' ? '#2c2c2c' : '#f9f9f9',
+    color: theme === 'dark' ? '#f0f0f0' : '#000000',
+  };
+
   return (
     <>
-      <Navbar theme={theme} setTheme={setTheme} /> {/* Pass theme and setTheme as props */}
+      <Navbar theme={theme} setTheme={setTheme} />
       <div className="container mx-auto p-6">
-        <div className="bg-violet-100 rounded-xl min-h-[80vh] p-8 shadow-lg">
+        <div
+          className="rounded-xl min-h-[80vh] p-8 shadow-lg"
+          id="mainpart-123"
+          style={mainPartStyle}
+        >
           <h1 className="font-bold text-center text-3xl mb-6">
             iTask - Manage Your Todos At One Place
           </h1>
@@ -88,7 +94,7 @@ function App() {
                 onChange={handleChange}
                 value={todo}
                 type="text"
-                className="w-full p-3 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 "
+                className="w-full p-3 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
                 placeholder="Enter your todo"
               />
               <button
